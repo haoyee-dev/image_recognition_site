@@ -7,14 +7,37 @@
 
 <body>
 
-    <video width="320" height="240" autoplay></video>
+    <!-- Selections -->
+    <!--
+    <div class="select">
+        <label for="audioSource">Audio input source: </label><select id="audioSource"></select>
+    </div>
+
+    <div class="select">
+        <label for="audioOutput">Audio output destination: </label><select id="audioOutput"></select>
+    </div>
+    -->
+    <div class="select">
+        <label for="videoSource">Video source: </label><select id="videoSource"></select>
+    </div>
+    
+    <!-- Display -->
+    <video id="video" width="320" height="240" autoplay></video>
+
+    <!-- Controls -->
     <button id="snap">Snap Photo</button>
     <form id="form" style="display: none">
         <canvas id="canvas" width="320" height="240"></canvas>
         <button id="submit" type="submit">Submit</button>
     </form>
+
+    <!-- Output -->
     <div id="result"></div>
+
+    <!-- Scripts -->
+    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
     <script type="text/javascript" src="main.js"></script>
+
 </body>
 
 </html>
