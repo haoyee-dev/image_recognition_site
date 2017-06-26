@@ -130,7 +130,7 @@ audioOutputSelect.onchange = changeAudioDestination;
 videoSelect.onchange = start;
 
 start();
-//submitImage();
+submitImage();
 
 function handleError(error) {
     console.log('navigator.getUserMedia error: ', error);
