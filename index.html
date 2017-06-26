@@ -3,38 +3,79 @@
 <head>
     <title>Image Capture</title>
     <script type="text/javascript" src="jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body>
 
-    <!-- Selections -->
-    <!--
-    <div class="select">
-        <label for="audioSource">Audio input source: </label><select id="audioSource"></select>
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-xs-offset-1 col-xs-10">
+                <h2 class="h2 center">Text Recognition Demo</h2>
+            </div>
+        </div>
+
+        <!-- Choosing Source -->
+        <div class="row">
+            <div class="col-xs-offset-1 col-xs-10">
+                <div class="select">
+                    <label for="videoSource">Video source: </label><select id="videoSource"></select>
+                </div>
+            </div>
+        </div>
+
+        <div id="videoDiv">
+            <!-- Display -->
+            <div class="row">
+                <div class="col-xs-offset-1 col-xs-10">
+                    <video id="video" width="320" height="240" autoplay></video>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="row">
+                <div class="col-xs-offset-1 col-xs-10">
+                    <button id="snap" class="btn btn-info btn-lg btn-block">Snap Photo</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="imageDiv" style="display:none">
+            <div class="row">
+                <div class="col-xs-offset-1 col-xs-10">
+                    <canvas id="canvas" width="320" height="240"></canvas>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-offset-1 col-xs-5">
+                    <button id="submit" type="submit" class="btn btn-success btn-lg btn-block">Translate</button>
+                </div>
+                 <div class="col-xs-5">
+                    <button id="reset" class="btn btn-warning btn-lg btn-block">Retake</button>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Output -->
+        <div id="resultDiv" style="display:none">
+            <hr />
+            <div class="row">
+                <div class="col-xs-offset-1 col-xs-10">
+                    <h3 class="h3">Result</h3>
+                    <div id="result"></div>
+                </div>
+            </div>
+           
+        </div>
+
     </div>
-
-    <div class="select">
-        <label for="audioOutput">Audio output destination: </label><select id="audioOutput"></select>
-    </div>
-    -->
-    <div class="select">
-        <label for="videoSource">Video source: </label><select id="videoSource"></select>
-    </div>
-    
-    <!-- Display -->
-    <video id="video" width="320" height="240" autoplay></video>
-
-    <!-- Controls -->
-    <button id="snap">Snap Photo</button>
-    <form id="form" style="display: none">
-        <canvas id="canvas" width="320" height="240"></canvas>
-        <button id="submit" type="submit">Submit</button>
-    </form>
-
-    <!-- Output -->
-    <div id="result"></div>
-
     <!-- Scripts -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
     <script type="text/javascript" src="main.js"></script>
 

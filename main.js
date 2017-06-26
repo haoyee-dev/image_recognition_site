@@ -9,10 +9,7 @@
 'use strict';
 
 var videoElement = document.querySelector('video');
-//var audioInputSelect = document.querySelector('select#audioSource');
-//var audioOutputSelect = document.querySelector('select#audioOutput');
 var videoSelect = document.querySelector('select#videoSource');
-//var selectors = [audioInputSelect, audioOutputSelect, videoSelect];
 var selectors = [videoSelect];
 
 function gotDevices(deviceInfos) {
@@ -33,14 +30,7 @@ function gotDevices(deviceInfos) {
         var option = document.createElement('option');
         option.value = deviceInfo.deviceId;
 
-        if (deviceInfo.kind === 'audioinput') {
-           // option.text = deviceInfo.label ||
-             //   'microphone ' + (audioInputSelect.length + 1);
-            //audioInputSelect.appendChild(option);
-        } else if (deviceInfo.kind === 'audiooutput') {
-            //option.text = deviceInfo.label || 'speaker ' + (audioOutputSelect.length + 1);
-            //audioOutputSelect.appendChild(option);
-        } else if (deviceInfo.kind === 'videoinput') {
+        if (deviceInfo.kind === 'videoinput') {
             option.text = deviceInfo.label || 'camera ' + (videoSelect.length + 1);
             videoSelect.appendChild(option);
         } else {
@@ -48,28 +38,34 @@ function gotDevices(deviceInfos) {
         }
     }
 
-    selectors.forEach(function (select, selectorIndex) {
-        if (Array.prototype.slice.call(select.childNodes).some(function (n) {
+    selectors
+        .forEach(function (select, selectorIndex) {
+            if (Array.prototype.slice.call(select.childNodes).some(function (n) {
                 return n.value === values[selectorIndex];
             })) {
-            select.value = values[selectorIndex];
-        }
-    });
+                select.value = values[selectorIndex];
+            }
+        });
 }
 
-navigator.mediaDevices.enumerateDevices().then(gotDevices).catch(handleError);
+navigator
+    .mediaDevices
+    .enumerateDevices()
+    .then(gotDevices)
+    .catch(handleError);
 
 // Attach audio output device to video element using device/sink ID.
 function attachSinkId(element, sinkId) {
     if (typeof element.sinkId !== 'undefined') {
-        element.setSinkId(sinkId)
+        element
+            .setSinkId(sinkId)
             .then(function () {
                 console.log('Success, audio output device attached: ' + sinkId);
             })
             .catch(function (error) {
                 var errorMessage = error;
                 if (error.name === 'SecurityError') {
-                    errorMessage = 'You need to use HTTPS for selecting audio output ' + 'device: ' + error;
+                    errorMessage = 'You need to use HTTPS for selecting audio output device: ' + error;
                 }
                 console.error(errorMessage);
 
@@ -80,53 +76,47 @@ function attachSinkId(element, sinkId) {
         console.warn('Browser does not support output device selection.');
     }
 }
-/*
-function changeAudioDestination() {
-    var audioDestination = audioOutputSelect.value;
-    attachSinkId(videoElement, audioDestination);
-}
-*/
+
 function gotStream(stream) {
     window.stream = stream; // make stream available to console
     videoElement.srcObject = stream;
 
     // Refresh button list in case labels have become available
-    return navigator.mediaDevices.enumerateDevices();
+    return navigator
+        .mediaDevices
+        .enumerateDevices();
 }
 
 function start() {
     if (window.stream) {
-        window.stream.getTracks().forEach(function (track) {
-            track.stop();
-        });
+        window
+            .stream
+            .getTracks()
+            .forEach(function (track) {
+                track.stop();
+            });
     }
 
-//    var audioSource = audioInputSelect.value;
+    //    var audioSource = audioInputSelect.value;
     var videoSource = videoSelect.value;
     var constraints = {
-/*
-        audio: {
-            deviceId: audioSource ? {
-                exact: audioSource
-            } : undefined
-        },
-*/
         video: {
-            deviceId: videoSource ? {
-                exact: videoSource
-            } : undefined
+            deviceId: videoSource
+                ? {
+                    exact: videoSource
+                }
+                : undefined
         }
-
     };
 
-    navigator.mediaDevices.getUserMedia(constraints).
-    then(gotStream).then(gotDevices).catch(handleError);
+    navigator
+        .mediaDevices
+        .getUserMedia(constraints)
+        .then(gotStream)
+        .then(gotDevices)
+        .catch(handleError);
 }
 
-/*
-audioInputSelect.onchange = start;
-audioOutputSelect.onchange = changeAudioDestination;
-*/
 videoSelect.onchange = start;
 
 start();
@@ -138,24 +128,32 @@ function handleError(error) {
 
 function submitImage() {
     var canvas = document.getElementById('canvas');
-    var form = document.getElementById('form');
+    var imageDiv = document.getElementById('imageDiv');
+    var videoDiv = document.getElementById('videoDiv');
     var context = canvas.getContext('2d');
     var snap = document.getElementById('snap');
     var submit = document.getElementById('submit');
-
+    var reset = document.getElementById('reset');
+    var resultDiv = document.getElementById('resultDiv');
+    
     snap.addEventListener('click', function () {
         context.drawImage(video, 0, 0, 320, 240);
-        stream.getVideoTracks().forEach(function (s) {
-            s.stop()
-        });
-        form.style.display = 'block';
+        stream
+            .getVideoTracks()
+            .forEach(function (s) {
+                s.stop()
+            });
+        imageDiv.style.display = 'block';
         video.style.display = 'none';
         snap.style.display = 'none';
-    })
+        videoDiv.style.display = 'none';
+    });
 
     submit.addEventListener('click', function (e) {
         e.preventDefault();
         console.log(canvas.toDataURL());
+
+        var result = document.getElementById('result');
 
         $.ajax({
             url: "https://us-central1-image-recognition-171007.cloudfunctions.net/translateImage",
@@ -165,58 +163,24 @@ function submitImage() {
             method: "POST",
             processData: false,
             success: function (data) {
-                $("#result").html(data);
+                resultDiv.style.display = 'block';
+                result.innerHTML = data;
+                console.log(data);
+            },
+            error: function (err) {
+                resultDiv.style.display = 'block';
+                result.innerHTML = err;
+                console.log(err);
             }
         })
-    })
-} 
+    });
 
-/*
-$(document).ready(function () {
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        var video = document.querySelector('video');
-        var stream;
-        navigator.mediaDevices.getUserMedia({
-            video: true
-        }).then(function (localMediaStream) {
-            stream = localMediaStream;
-            video.src = window.URL.createObjectURL(localMediaStream);
-        });
-
-        var canvas = document.getElementById('canvas');
-        var form = document.getElementById('form');
-        var context = canvas.getContext('2d');
-        var snap = document.getElementById('snap');
-        var submit = document.getElementById('submit');
-
-        snap.addEventListener('click', function () {
-            context.drawImage(video, 0, 0, 320, 240);
-            stream.getVideoTracks().forEach(function (s) {
-                s.stop()
-            });
-            form.style.display = 'block';
-            video.style.display = 'none';
-            snap.style.display = 'none';
-        })
-
-        submit.addEventListener('click', function (e) {
-            e.preventDefault();
-            console.log(canvas.toDataURL());
-
-            $.ajax({
-                url: "https://us-central1-image-recognition-171007.cloudfunctions.net/translateImage",
-                data: canvas.toDataURL(),
-                dataType: "text",
-                contentType: "text/plain",
-                method: "POST",
-                processData: false,
-                success: function (data) {
-                    $("#result").html(data);
-                }
-            })
-        })
-    } else {
-        console.log("no media");
-    }
-});
-*/
+    reset.addEventListener('click', function (e) {
+        imageDiv.style.display = 'none';
+        video.style.display = 'block';
+        snap.style.display = 'block';
+        videoDiv.style.display = 'block';
+        resultDiv.style.display = 'none';
+        start();
+    });
+}
