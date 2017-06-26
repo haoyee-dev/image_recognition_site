@@ -31,7 +31,7 @@
             <!-- Display -->
             <div class="row">
                 <div class="col-xs-offset-1 col-xs-10">
-                    <video id="video" width="320" height="240" autoplay></video>
+                    <video id="video" autoplay></video>
                 </div>
             </div>
 
@@ -46,7 +46,7 @@
         <div id="imageDiv" style="display:none">
             <div class="row">
                 <div class="col-xs-offset-1 col-xs-10">
-                    <canvas id="canvas" width="320" height="240"></canvas>
+                    <canvas id="canvas"></canvas>
                 </div>
             </div>
 
@@ -54,7 +54,7 @@
                 <div class="col-xs-offset-1 col-xs-5">
                     <button id="submit" type="submit" class="btn btn-success btn-lg btn-block">Translate</button>
                 </div>
-                 <div class="col-xs-5">
+                <div class="col-xs-5">
                     <button id="reset" class="btn btn-warning btn-lg btn-block">Retake</button>
                 </div>
             </div>
@@ -70,7 +70,12 @@
                     <div id="result"></div>
                 </div>
             </div>
-           
+
+        </div>
+
+        <!-- Loading GIF -->
+        <div id="loadingDiv" style="display:none">
+            <img src="loading.gif"/>
         </div>
 
     </div>

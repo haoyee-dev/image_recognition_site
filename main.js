@@ -128,6 +128,7 @@ function handleError(error) {
 
 function submitImage() {
     var canvas = document.getElementById('canvas');
+    var video = document.getElementById('video');
     var imageDiv = document.getElementById('imageDiv');
     var videoDiv = document.getElementById('videoDiv');
     var context = canvas.getContext('2d');
@@ -135,16 +136,19 @@ function submitImage() {
     var submit = document.getElementById('submit');
     var reset = document.getElementById('reset');
     var resultDiv = document.getElementById('resultDiv');
-    
+    var loadingDiv = document.getElementById('loadingDiv');
+
     snap.addEventListener('click', function () {
-        context.drawImage(video, 0, 0, 320, 240);
+        canvas.width = video.offsetWidth;
+        canvas.height = video.offsetHeight;
+        
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
         stream
             .getVideoTracks()
             .forEach(function (s) {
                 s.stop()
             });
         imageDiv.style.display = 'block';
-        video.style.display = 'none';
         snap.style.display = 'none';
         videoDiv.style.display = 'none';
     });
@@ -152,6 +156,7 @@ function submitImage() {
     submit.addEventListener('click', function (e) {
         e.preventDefault();
         console.log(canvas.toDataURL());
+        loadingDiv.style.display = 'block';
 
         var result = document.getElementById('result');
 
@@ -164,11 +169,18 @@ function submitImage() {
             processData: false,
             success: function (data) {
                 resultDiv.style.display = 'block';
-                result.innerHTML = data;
+                loadingDiv.style.display = 'none';
+                if (data.length <= 0) {
+                    result.innerHTML = "No result"
+                }
+                else {
+                    result.innerHTML = data;
+                }
                 console.log(data);
             },
             error: function (err) {
                 resultDiv.style.display = 'block';
+                loadingDiv.style.display = 'none';
                 result.innerHTML = err;
                 console.log(err);
             }
@@ -177,7 +189,6 @@ function submitImage() {
 
     reset.addEventListener('click', function (e) {
         imageDiv.style.display = 'none';
-        video.style.display = 'block';
         snap.style.display = 'block';
         videoDiv.style.display = 'block';
         resultDiv.style.display = 'none';
