@@ -4,6 +4,8 @@
  *  Use of this source code is governed by a BSD-style license
  *  that can be found in the LICENSE file in the root of the source
  *  tree.
+ * 
+ * From: https://webrtc.github.io/samples/src/content/devices/input-output/
  */
 
 'use strict';
@@ -11,6 +13,7 @@
 var videoElement = document.querySelector('video');
 var videoSelect = document.querySelector('select#videoSource');
 var selectors = [videoSelect];
+var translateEndpoint = "<GOOGLE_VISION_API_ENDPOINT>";
 
 function gotDevices(deviceInfos) {
 
@@ -155,13 +158,12 @@ function submitImage() {
 
     submit.addEventListener('click', function (e) {
         e.preventDefault();
-        console.log(canvas.toDataURL());
         loadingDiv.style.display = 'block';
 
         var result = document.getElementById('result');
 
         $.ajax({
-            url: "https://us-central1-image-recognition-171007.cloudfunctions.net/translateImage",
+            url: translateEndpoint,
             data: canvas.toDataURL(),
             dataType: "text",
             contentType: "text/plain",
@@ -176,13 +178,11 @@ function submitImage() {
                 else {
                     result.innerHTML = data;
                 }
-                console.log(data);
             },
             error: function (err) {
                 resultDiv.style.display = 'block';
                 loadingDiv.style.display = 'none';
                 result.innerHTML = err;
-                console.log(err);
             }
         })
     });
